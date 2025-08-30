@@ -1,41 +1,35 @@
-// Example dataset (replace with your real products later)
-const products = [
-  {
-    id: 1,
-    name: "Lenovo L13 YOGA",
-    specs: "i7-1165g7, 16GB memory, 500GB SSD, 720p camera",
-    price: "£395"
-  },
-  {
-    id: 2,
-    name: "Dell Latitude 7490",
-    specs: "Intel i7, 16GB RAM, 512GB SSD",
-    price: "£450"
-  },
-  {
-    id: 3,
-    name: "ThinkPad T14",
-    specs: "Intel i5, 8GB RAM, 256GB SSD",
-    price: "£320"
-  },
-  {
-    id: 4,
-    name: "HP EliteBook 840",
-    specs: "Intel i7, 16GB RAM, 1TB SSD, Full HD",
-    price: "£520"
-  }
-];
+// Your Google Sheet CSV link
+const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRy4oNHqb6IGGRq87BVHs5GD69suWg9nX89R8W6rfMV8IfgZrZ8PImes-MX2_JkgYtcGJmH45M8V-M/pub?output=csv";
 
 const productList = document.getElementById("product-list");
-const searchInput = document.getElementById("search");
 
-// Render product list
+// Fetch and parse CSV
+async function fetchProducts() {
+  const response = await fetch(sheetURL);
+  const data = await response.text();
+  
+  // Split into rows/columns
+  const rows = data.split("\n").map(r => r.split(","));
+  const headers = rows.shift().map(h => h.trim().toLowerCase());
+
+  // Convert rows into objects
+  const products = rows
+    .filter(row => row.length > 1) // ignore blank rows
+    .map(row => {
+      let obj = {};
+      headers.forEach((h, i) => obj[h] = row[i]?.trim());
+      return obj;
+    });
+
+  // Sort alphabetically by product name
+  products.sort((a, b) => a.name.localeCompare(b.name));
+
+  renderProducts(products);
+}
+
+// Render all products
 function renderProducts(list) {
   productList.innerHTML = "";
-  if (list.length === 0) {
-    productList.innerHTML = `<p style="text-align:center; color:#888;">No products found.</p>`;
-    return;
-  }
 
   list.forEach(product => {
     const productDiv = document.createElement("div");
@@ -43,7 +37,7 @@ function renderProducts(list) {
 
     productDiv.innerHTML = `
       <h2>${product.name}</h2>
-      <button onclick="toggleDetails(${product.id})">View</button>
+      <button onclick="toggleDetails('${product.id}')">View</button>
       <div class="details" id="details-${product.id}">
         <p><strong>Specs:</strong> ${product.specs}</p>
         <p><strong>Price:</strong> ${product.price}</p>
@@ -54,9 +48,6 @@ function renderProducts(list) {
   });
 }
 
-// Initial render
-renderProducts(products);
-
 // Toggle details
 function toggleDetails(id) {
   const details = document.getElementById(`details-${id}`);
@@ -66,13 +57,5 @@ function toggleDetails(id) {
       : "none";
 }
 
-// Search filter
-searchInput.addEventListener("input", (e) => {
-  const value = e.target.value.toLowerCase();
-  const filtered = products.filter(product => 
-    product.name.toLowerCase().includes(value) || 
-    product.specs.toLowerCase().includes(value) || 
-    product.price.toLowerCase().includes(value)
-  );
-  renderProducts(filtered);
-});
+// Fetch on page load
+fetchProducts();
