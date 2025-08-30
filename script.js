@@ -21,10 +21,10 @@ async function fetchProducts() {
       return obj;
     });
 
-  // Sort alphabetically by product name
-  products.sort((a, b) => a.name.localeCompare(b.name));
+  // ✅ Always sort alphabetically by product name
+  const sortedProducts = products.sort((a, b) => a.name.localeCompare(b.name));
 
-  renderProducts(products);
+  renderProducts(sortedProducts);
 }
 
 // Render all products
