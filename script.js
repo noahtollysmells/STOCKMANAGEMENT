@@ -2,6 +2,8 @@
 const sheetURL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRy4oNHqb6IGGRq87BVHs5GD69suWg9nX89R8W6rfMV8IfgZrZ8PImes-MX2_JkgYtcGJmH45M8V-M/pub?output=csv";
 
 const productList = document.getElementById("product-list");
+const searchInput = document.getElementById("search");
+let allProducts = [];
 
 // Simple CSV parser (handles commas in quotes)
 function parseCSV(str) {
@@ -35,7 +37,7 @@ async function fetchProducts() {
     const rows = parseCSV(data);
     const headers = rows.shift().map(h => h.trim().toLowerCase());
 
-    const products = rows
+    allProducts = rows
       .filter(row => row.length > 1)
       .map(row => {
         let obj = {};
@@ -45,11 +47,11 @@ async function fetchProducts() {
         return obj;
       });
 
-    products.sort((a, b) => (a.model || "").localeCompare(b.model || ""));
-    renderProducts(products);
+    allProducts.sort((a, b) => (a.model || "").localeCompare(b.model || ""));
+    renderProducts(allProducts);
   } catch (err) {
     console.error("Error loading products:", err);
-    productList.innerHTML = `<p style="color:red; text-align:center;">Failed to load products. Please check your link.</p>`;
+    productList.innerHTML = `<p style="color:red; text-align:center;">Failed to load products.</p>`;
   }
 }
 
@@ -57,7 +59,7 @@ function renderProducts(list) {
   productList.innerHTML = "";
 
   if (!list.length) {
-    productList.innerHTML = `<p style="text-align:center; color:#555;">No products available.</p>`;
+    productList.innerHTML = `<p style="text-align:center; color:#555;">No products found.</p>`;
     return;
   }
 
@@ -88,4 +90,17 @@ function toggleDetails(name) {
       : "none";
 }
 
+// Live search filter
+searchInput.addEventListener("input", () => {
+  const term = searchInput.value.toLowerCase();
+  const filtered = allProducts.filter(
+    p =>
+      (p.model && p.model.toLowerCase().includes(term)) ||
+      (p.specs && p.specs.toLowerCase().includes(term)) ||
+      (p.price && p.price.toLowerCase().includes(term))
+  );
+  renderProducts(filtered);
+});
+
+// Load products
 fetchProducts();
