@@ -1,4 +1,4 @@
-// Mock data
+// Example dataset (replace with your real products later)
 const products = [
   {
     id: 1,
@@ -17,6 +17,12 @@ const products = [
     name: "ThinkPad T14",
     specs: "Intel i5, 8GB RAM, 256GB SSD",
     price: "£320"
+  },
+  {
+    id: 4,
+    name: "HP EliteBook 840",
+    specs: "Intel i7, 16GB RAM, 1TB SSD, Full HD",
+    price: "£520"
   }
 ];
 
@@ -26,6 +32,11 @@ const searchInput = document.getElementById("search");
 // Render product list
 function renderProducts(list) {
   productList.innerHTML = "";
+  if (list.length === 0) {
+    productList.innerHTML = `<p style="text-align:center; color:#888;">No products found.</p>`;
+    return;
+  }
+
   list.forEach(product => {
     const productDiv = document.createElement("div");
     productDiv.classList.add("product");
@@ -49,7 +60,10 @@ renderProducts(products);
 // Toggle details
 function toggleDetails(id) {
   const details = document.getElementById(`details-${id}`);
-  details.style.display = details.style.display === "none" || details.style.display === "" ? "block" : "none";
+  details.style.display =
+    details.style.display === "none" || details.style.display === ""
+      ? "block"
+      : "none";
 }
 
 // Search filter
@@ -57,7 +71,8 @@ searchInput.addEventListener("input", (e) => {
   const value = e.target.value.toLowerCase();
   const filtered = products.filter(product => 
     product.name.toLowerCase().includes(value) || 
-    product.specs.toLowerCase().includes(value)
+    product.specs.toLowerCase().includes(value) || 
+    product.price.toLowerCase().includes(value)
   );
   renderProducts(filtered);
 });
