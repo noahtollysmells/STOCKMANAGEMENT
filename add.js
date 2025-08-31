@@ -1,5 +1,5 @@
 const SHEET_API_URL = "REPLACE_WITH_YOUR_WEB_APP_URL";
-const CATALOG_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vTy5o20ODcjm3Ev41jk9JnShb71FVq1iieVr_MkrReQLt0zJ5f9o1jCxHSSss0_cdS1-aDVd0wAxqvG/pub?output=csv";
+const CATALOG_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQRy4oNHqb6IGGRq87BVHs5GD69suWg9nX89R8W6rfMV8IfgZrZ8PImes-MX2_JkgYtcGJmH45M8V-M/pub?output=csv";
 
 async function loadCatalog() {
   let res = await fetch(CATALOG_URL);
