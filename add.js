@@ -1,6 +1,6 @@
 // ---------------- Supabase Connection ----------------
-const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
-const SUPABASE_KEY = "YOUR-ANON-KEY";
+const SUPABASE_URL = "https://xvkohuavbynrzmchxriq.supabase.co";
+const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a29odWF2YnlucnptY2h4cmlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2NDMzMTQsImV4cCI6MjA3MjIxOTMxNH0.pW1yCTOZfSvJg4wCJkp7hScqcq5_WHc8zq_0hUji0TYY";
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Elements
