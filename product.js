@@ -1,58 +1,55 @@
+// ---------------- Supabase Connection ----------------
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+const SUPABASE_KEY = "YOUR-ANON-KEY";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-const STOCK_KEY = 'stock-items-v2';
+// ---------------- Get Model from URL ----------------
+const params = new URLSearchParams(window.location.search);
+const modelName = params.get("model");
 
-function loadStock(){
-  try{
-    const raw = localStorage.getItem(STOCK_KEY);
-    return raw ? JSON.parse(raw) : {};
-  }catch(e){
-    localStorage.removeItem(STOCK_KEY);
-    return {};
-  }
-}
+// Elements
+const container = document.getElementById("product-details");
 
-function getParam(name){
-  return new URLSearchParams(window.location.search).get(name) || '';
-}
-
-function showProduct(model){
-  const stock = loadStock();
-  const item = stock[model];
-  const title = document.getElementById('title');
-  const specs = document.getElementById('specs');
-  const price = document.getElementById('price');
-  const qty = document.getElementById('qty');
-
-  if(!item){
-    title.textContent = 'Not in stock';
-    specs.textContent = '—';
-    price.textContent = '—';
-    qty.textContent = '0';
-  }else{
-    title.textContent = item.model;
-    specs.textContent = item.specs || '—';
-    price.textContent = item.price || '—';
-    qty.textContent = String(item.qty || 0);
-  }
-
-  // Build a shareable URL for QR that always lands on this exact product
-  const base = new URL(window.location.href);
-  base.search = ''; // reset params
-  base.searchParams.set('model', model);
-  const url = base.toString();
-
-  const cont = document.getElementById('qrcode');
-  cont.innerHTML = '';
-  new QRCode(cont, { text: url, width: 180, height: 180, correctLevel: QRCode.CorrectLevel.M });
-}
-
-(function init(){
-  const model = getParam('model');
-  if(!model){
-    document.getElementById('title').textContent = 'No product selected';
+// ---------------- Load Product ----------------
+async function loadProduct() {
+  if (!modelName) {
+    container.innerHTML = "<p>⚠️ No product selected.</p>";
     return;
   }
-  // decode in case model was encoded
-  const decoded = decodeURIComponent(model);
-  showProduct(decoded);
-})();
+
+  const { data, error } = await supabase
+    .from("stock")
+    .select("*")
+    .eq("model", modelName)
+    .limit(1);
+
+  if (error) {
+    console.error(error);
+    container.innerHTML = "<p>⚠️ Error loading product.</p>";
+    return;
+  }
+
+  if (!data || data.length === 0) {
+    container.innerHTML = "<p>❌ Product not found.</p>";
+    return;
+  }
+
+  const product = data[0];
+
+  container.innerHTML = `
+    <h2>${product.model}</h2>
+    <p><strong>Specs:</strong> ${product.specs}</p>
+    <p><strong>Price:</strong> ${product.price}</p>
+    <p><strong>Quantity:</strong> ${product.qty}</p>
+    <div id="qrcode"></div>
+  `;
+
+  // Generate QR code that links back to this page
+  new QRCode(document.getElementById("qrcode"), {
+    text: window.location.href,
+    width: 128,
+    height: 128
+  });
+}
+
+loadProduct();
