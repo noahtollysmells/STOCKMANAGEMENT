@@ -1,0 +1,41 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Product</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="product-page">
+    <div class="card-lg">
+      <h1 id="title" class="product-title">Loading…</h1>
+      <div class="meta">
+        <div class="row">
+          <p class="label">Specs</p>
+          <p id="specs" class="value">—</p>
+        </div>
+        <div class="row">
+          <p class="label">Price</p>
+          <p id="price" class="value">—</p>
+        </div>
+        <div class="row">
+          <p class="label">In Stock</p>
+          <p id="qty" class="value">—</p>
+        </div>
+      </div>
+      <div class="qr-wrap">
+        <div id="qrcode"></div>
+      </div>
+      <div class="footer-actions">
+        <a class="back-link" href="index.html">← Back to stock</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/qrcodejs@1.0.0/qrcode.min.js"></script>
+  <script src="product.js"></script>
+</body>
+</html>

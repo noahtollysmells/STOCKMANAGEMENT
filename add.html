@@ -1,0 +1,61 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Add Product — Stock v2.0</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header class="container">
+    <h1>Add Product</h1>
+    <p class="subtitle">Choose from catalogue, tweak details, set quantity, and add.</p>
+  </header>
+
+  <main class="add-layout">
+    <section class="catalog">
+      <h2>Catalogue</h2>
+      <div class="catalog-search">
+        <input type="search" id="catalogSearch" placeholder="Search catalogue…">
+      </div>
+      <div id="catalogList" class="list"></div>
+    </section>
+
+    <section class="editor">
+      <h2>Selected Product</h2>
+      <div class="form-row">
+        <label class="label">Model</label>
+        <input type="text" id="fModel" placeholder="Model" />
+      </div>
+      <div class="form-row">
+        <label class="label">Specs</label>
+        <textarea id="fSpecs" placeholder="Specs"></textarea>
+      </div>
+      <div class="form-row">
+        <label class="label">Price</label>
+        <input type="text" id="fPrice" placeholder="Price e.g. £329" />
+      </div>
+      <div class="form-row">
+        <label class="label">Quantity</label>
+        <input type="number" id="fQty" min="1" step="1" value="1" />
+      </div>
+      <div class="notice">Tip: You can tweak specs/price before adding.</div>
+      <div class="actions">
+        <a class="btn" href="index.html">Cancel</a>
+        <button class="btn" id="addBtn">✓ Add to Stock</button>
+      </div>
+    </section>
+  </main>
+
+  <template id="catalogItemTpl">
+    <div class="item">
+      <span class="name"></span>
+      <a class="btn pick">Pick</a>
+    </div>
+  </template>
+
+  <script src="add.js"></script>
+</body>
+</html>
