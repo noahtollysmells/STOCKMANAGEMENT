@@ -1,27 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stock Management v3.0</title>
-  <link rel="stylesheet" href="style.css" />
-  <!-- Supabase library -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stock Manager</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script defer src="stock.js"></script>
 </head>
 <body>
   <header>
-    <h1>Stock Manager</h1>
-    <p class="subtitle">Live Stock List<br><span class="version">Version 3.0</span></p>
-    <input type="text" id="search" placeholder="Search stock..." />
-    <div class="actions">
-      <a href="add.html" class="btn">＋ Add Product</a>
-    </div>
+    <h1>📦 Stock Manager</h1>
+    <button onclick="window.location.href='add.html'">➕ Add Product</button>
   </header>
 
-  <main>
-    <div id="stock-list"></div>
-  </main>
+  <input type="text" id="search" placeholder="🔍 Search products...">
 
-  <script src="stock.js"></script>
+  <ul id="stock-list"></ul>
 </body>
 </html>
