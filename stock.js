@@ -1,71 +1,57 @@
+// ---------------- Supabase Connection ----------------
+const SUPABASE_URL = "https://YOUR-PROJECT.supabase.co";
+const SUPABASE_KEY = "YOUR-ANON-KEY";
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-// Local storage keys
-const STOCK_KEY = 'stock-items-v2';
+// Elements
+const stockList = document.getElementById("stock-list");
+const searchInput = document.getElementById("search");
+let allStock = [];
 
-function loadStock(){
-  try{
-    const raw = localStorage.getItem(STOCK_KEY);
-    return raw ? JSON.parse(raw) : {};
-  }catch(e){
-    console.error('Bad stock JSON, resetting', e);
-    localStorage.removeItem(STOCK_KEY);
-    return {};
-  }
-}
-
-function saveStock(obj){
-  localStorage.setItem(STOCK_KEY, JSON.stringify(obj));
-}
-
-function toList(obj){
-  return Object.values(obj || {});
-}
-
-function ensureNums(x){
-  x.qty = Number(x.qty||0);
-  return x;
-}
-
-function sortAlpha(list){
-  return list.sort((a,b)=> a.model.localeCompare(b.model, undefined, {sensitivity:'base'}));
-}
-
-const grid = document.getElementById('stock-grid');
-const tpl = document.getElementById('stock-card-tpl');
-const search = document.getElementById('search');
-
-function render(list){
-  grid.innerHTML = '';
-  if(!list.length){
-    grid.innerHTML = '<p style="text-align:center;color:#9ca3af">No items in stock yet. Click “Add Product”.</p>';
+// ---------------- Load Stock ----------------
+async function loadStock() {
+  const { data, error } = await supabase.from("stock").select("*");
+  if (error) {
+    console.error("Error loading stock:", error.message);
+    stockList.innerHTML = "<p>⚠️ Could not load stock.</p>";
     return;
   }
-  list.forEach(p=>{
-    const node = tpl.content.cloneNode(true);
-    node.querySelector('.model').textContent = p.model;
-    node.querySelector('.qty').textContent = `In stock: ${p.qty}`;
-    node.querySelector('.view').setAttribute('href', 'product.html?model=' + encodeURIComponent(p.model));
-    grid.appendChild(node);
+  allStock = data;
+  renderStock(allStock);
+}
+
+// ---------------- Render Stock ----------------
+function renderStock(list) {
+  stockList.innerHTML = "";
+  if (list.length === 0) {
+    stockList.innerHTML = "<p>No products in stock yet.</p>";
+    return;
+  }
+
+  list.forEach(item => {
+    const div = document.createElement("div");
+    div.classList.add("stock-item");
+    div.innerHTML = `
+      <h2>${item.model}</h2>
+      <p><strong>In Stock:</strong> ${item.qty}</p>
+      <a href="product.html?model=${encodeURIComponent(item.model)}">
+        <button>View</button>
+      </a>
+    `;
+    stockList.appendChild(div);
   });
 }
 
-function filter(list, q){
-  q = q.toLowerCase();
-  return list.filter(p =>
-    p.model.toLowerCase().includes(q) ||
-    (p.specs||'').toLowerCase().includes(q) ||
-    (p.price||'').toLowerCase().includes(q)
+// ---------------- Search ----------------
+searchInput.addEventListener("input", () => {
+  const term = searchInput.value.toLowerCase();
+  const filtered = allStock.filter(p =>
+    (p.model && p.model.toLowerCase().includes(term)) ||
+    (p.specs && p.specs.toLowerCase().includes(term)) ||
+    (p.price && p.price.toLowerCase().includes(term))
   );
-}
+  renderStock(filtered);
+});
 
-function init(){
-  const stockObj = loadStock();
-  const list = sortAlpha(toList(stockObj).map(ensureNums));
-  render(list);
-  search.addEventListener('input', ()=>{
-    const q = search.value;
-    const base = sortAlpha(toList(loadStock()).map(ensureNums));
-    render(filter(base, q));
-  });
-}
-init();
+// ---------------- Start ----------------
+loadStock();
