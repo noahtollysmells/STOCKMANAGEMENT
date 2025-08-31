@@ -1,101 +1,27 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Add Product</title>
-  <link rel="stylesheet" href="style.css" />
-
-  <!-- Supabase -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <link rel="stylesheet" href="style.css">
+  <script src="https://unpkg.com/@supabase/supabase-js"></script>
+  <script defer src="add.js"></script>
 </head>
 <body>
   <header>
-    <h1>Add Product</h1>
-    <a href="index.html" class="btn">← Back to Stock</a>
+    <h1>➕ Add Product</h1>
+    <button onclick="window.location.href='index.html'">⬅ Back</button>
   </header>
 
-  <main>
-    <form id="addForm" class="form-card">
-      <label for="model">Choose Model</label>
-      <select id="model" name="model" required>
-        <option value="">-- Select a product --</option>
-      </select>
+  <ul id="productList"></ul>
 
-      <label for="specs">Specs</label>
-      <input type="text" id="specs" name="specs" required />
-
-      <label for="price">Price</label>
-      <input type="text" id="price" name="price" required />
-
-      <label for="qty">Quantity</label>
-      <input type="number" id="qty" name="qty" min="1" value="1" required />
-
-      <button type="submit" class="btn">Add to Stock</button>
-    </form>
-  </main>
-
-  <footer>
-    <p class="version">Version 3.0</p>
-  </footer>
-
-  <script>
-    // ---------------- Supabase Connection ----------------
-    const SUPABASE_URL = "https://xvkohuavbynrzmchxriq.supabase.co";
-    const SUPABASE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2a29odWF2YnlucnptY2h4cmlxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTY2NDMzMTQsImV4cCI6MjA3MjIxOTMxNH0.pW1yCTOZfSvJg4wCJkp7hScqcq5_WHc8zq_0hUji0TY";
-    const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
-
-    const form = document.getElementById("addForm");
-    const modelSelect = document.getElementById("model");
-    const specsInput = document.getElementById("specs");
-    const priceInput = document.getElementById("price");
-
-    // ---------------- Load Catalog ----------------
-    async function loadCatalog() {
-      const { data, error } = await supabase.from("catalog").select("*").order("model", { ascending: true });
-      if (error) {
-        console.error("Error loading catalog:", error.message);
-        return;
-      }
-      data.forEach(item => {
-        const opt = document.createElement("option");
-        opt.value = item.model;
-        opt.textContent = item.model;
-        opt.dataset.specs = item.specs || "";
-        opt.dataset.price = item.price || "";
-        modelSelect.appendChild(opt);
-      });
-    }
-
-    // Auto-fill specs + price when selecting a model
-    modelSelect.addEventListener("change", () => {
-      const selected = modelSelect.options[modelSelect.selectedIndex];
-      specsInput.value = selected.dataset.specs || "";
-      priceInput.value = selected.dataset.price || "";
-    });
-
-    // ---------------- Save Product ----------------
-    form.addEventListener("submit", async (e) => {
-      e.preventDefault();
-
-      const model = modelSelect.value;
-      const specs = specsInput.value.trim();
-      const price = priceInput.value.trim();
-      const qty = parseInt(form.qty.value, 10) || 1;
-
-      const { error } = await supabase.from("stock").insert([
-        { model, specs, price, qty }
-      ]);
-
-      if (error) {
-        alert("❌ Error: " + error.message);
-      } else {
-        alert("✅ Product added!");
-        window.location.href = "index.html";
-      }
-    });
-
-    loadCatalog();
-  </script>
+  <div id="productDetails" style="display:none;">
+    <h2 id="selectedModel"></h2>
+    <p><strong>Specs:</strong> <span id="selectedSpecs"></span></p>
+    <p><strong>Price:</strong> <span id="selectedPrice"></span></p>
+    <label>Quantity: <input type="number" id="quantity" value="1" min="1"></label>
+    <button onclick="saveProduct()">✅ Add to Stock</button>
+  </div>
 </body>
 </html>
