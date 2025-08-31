@@ -1,41 +1,26 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Stock Manager — v2.0 (base v1.0)</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="style.css">
+  <title>Stock Management v3.0</title>
+  <link rel="stylesheet" href="style.css" />
+  <!-- Supabase library -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 </head>
 <body>
-  <header class="container">
-    <h1>General Stock</h1>
-    <p class="subtitle">Live Local Stock List<br><span class="version">Version 2.0 • Base: Version 1.0</span></p>
-    <div class="topbar">
-      <div class="search-wrap">
-        <input id="search" type="search" placeholder="Search current stock…" aria-label="Search stock">
-      </div>
-      <span class="spacer"></span>
-      <a class="btn" href="add.html">＋ Add Product</a>
+  <header>
+    <h1>Stock Manager</h1>
+    <p class="subtitle">Live Stock List<br><span class="version">Version 3.0</span></p>
+    <input type="text" id="search" placeholder="Search stock..." />
+    <div class="actions">
+      <a href="add.html" class="btn">＋ Add Product</a>
     </div>
   </header>
 
-  <main class="container">
-    <div id="stock-grid" class="grid"></div>
+  <main>
+    <div id="stock-list"></div>
   </main>
-
-  <template id="stock-card-tpl">
-    <article class="card">
-      <div>
-        <h2 class="model"></h2>
-        <span class="qty"></span>
-      </div>
-      <div class="card-actions">
-        <a class="btn view">View</a>
-      </div>
-    </article>
-  </template>
 
   <script src="stock.js"></script>
 </body>
